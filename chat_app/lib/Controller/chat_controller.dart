@@ -12,7 +12,7 @@ class ChatController extends GetxController {
   final ScrollController listController = ScrollController();
   final String email = Get.arguments['email'];
   final String to = Get.arguments['to'];
-  final io.Socket _socket = io.io('http://172.16.16.100:4000', {
+  final io.Socket _socket = io.io('http://192.168.1.7:4000', {
     'autoConnect': false,
     'transports': ['websocket'],
   });
