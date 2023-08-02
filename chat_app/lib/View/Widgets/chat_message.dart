@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 class ChatMessage extends StatefulWidget {
   final Message message;
+  final Message? reply;
   final Message? previousMessage;
   final int index;
   final String from;
@@ -14,6 +15,7 @@ class ChatMessage extends StatefulWidget {
     required this.index,
     required this.from,
     this.previousMessage,
+    this.reply,
   });
 
   @override
@@ -65,6 +67,7 @@ class _ChatMessageState extends State<ChatMessage> {
             child: widget.message.from == widget.from
                 ? UserBubble(
                     message: widget.message.text,
+                    reply: widget.reply,
                     time: TimeOfDay(
                       hour: widget.message.date.hour,
                       minute: widget.message.date.minute,
@@ -73,9 +76,11 @@ class _ChatMessageState extends State<ChatMessage> {
                         (widget.message.from == widget.from &&
                             widget.previousMessage!.from != widget.from),
                     isRead: widget.message.isRead,
+                    email: widget.from,
                   )
                 : OtherBubble(
                     message: widget.message.text,
+                    reply: widget.reply,
                     time: TimeOfDay(
                       hour: widget.message.date.hour,
                       minute: widget.message.date.minute,
@@ -83,6 +88,7 @@ class _ChatMessageState extends State<ChatMessage> {
                     hasTail: widget.index == 0 ||
                         (widget.message.from != widget.from &&
                             widget.previousMessage!.from == widget.from),
+                    email: widget.message.from,
                   ),
           ),
         ),

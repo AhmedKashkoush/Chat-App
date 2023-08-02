@@ -4,6 +4,7 @@ class Message {
   final String text;
   final DateTime date;
   final bool isRead;
+  final Message? reply;
 
   const Message({
     required this.from,
@@ -11,6 +12,7 @@ class Message {
     required this.text,
     required this.date,
     this.isRead = false,
+    this.reply,
   });
 
   factory Message.fromJson(Map<String, dynamic> json) {
@@ -19,6 +21,7 @@ class Message {
       to: json['to'],
       text: json['text'],
       date: DateTime.parse(json['date']),
+      reply: json['reply'] != null ? Message.fromJson(json['reply']) : null,
     );
   }
 
@@ -28,6 +31,7 @@ class Message {
       "to": to,
       "text": text,
       "date": date.toString(),
+      "reply": reply?.toJson(),
     };
   }
 

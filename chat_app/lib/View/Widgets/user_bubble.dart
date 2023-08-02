@@ -1,3 +1,5 @@
+import 'package:chat_app/Model/message.dart';
+import 'package:chat_app/View/Widgets/reply_widget.dart';
 import 'package:flutter/material.dart';
 
 class UserBubble extends StatelessWidget {
@@ -5,12 +7,16 @@ class UserBubble extends StatelessWidget {
   final TimeOfDay time;
   final bool hasTail;
   final bool isRead;
+  final Message? reply;
+  final String email;
   const UserBubble({
     super.key,
     required this.message,
     required this.time,
     this.hasTail = true,
     this.isRead = false,
+    this.reply,
+    required this.email,
   });
 
   @override
@@ -41,61 +47,91 @@ class UserBubble extends StatelessWidget {
                   bottom: 2,
                 )
               : const EdgeInsets.symmetric(
-                  horizontal: 8,
+                  horizontal: 18,
                   vertical: 2,
                 ),
-          padding: const EdgeInsets.all(12),
-          child: Padding(
-            padding: const EdgeInsetsDirectional.only(start: 8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  message,
-                  style: const TextStyle(color: Colors.white),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (reply != null)
+                Padding(
+                  padding: hasTail
+                      ? const EdgeInsetsDirectional.only(start: 8)
+                      : const EdgeInsets.all(0),
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: ReplyWidget(
+                      reply: reply!,
+                      from: email,
+                      isMe: true,
+                    ),
+                  ),
                 ),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 400),
-                      transitionBuilder: (child, animation) {
-                        return ScaleTransition(
-                          scale: animation,
-                          child: FadeTransition(
-                            opacity: animation,
-                            child: child,
-                          ),
-                        );
-                      },
-                      child: !isRead
-                          ? const Icon(
-                              Icons.check,
-                              key: ValueKey('sent'),
-                              size: 18,
-                              color: Colors.white54,
-                            )
-                          : const Icon(
-                              Icons.check_circle,
-                              key: ValueKey('read'),
-                              size: 18,
-                              color: Colors.pinkAccent,
-                            ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      time.format(context),
-                      style: const TextStyle(
-                        color: Colors.white54,
-                        fontSize: 12,
+              Padding(
+                padding: const EdgeInsetsDirectional.only(start: 8),
+                child: Padding(
+                  padding: !hasTail
+                      ? const EdgeInsetsDirectional.only(
+                          top: 12,
+                          bottom: 12,
+                          end: 12,
+                          start: 4,
+                        )
+                      : const EdgeInsets.all(12),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        message,
+                        style: const TextStyle(color: Colors.white),
                       ),
-                    ),
-                  ],
-                )
-              ],
-            ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 400),
+                            transitionBuilder: (child, animation) {
+                              return ScaleTransition(
+                                scale: animation,
+                                child: FadeTransition(
+                                  opacity: animation,
+                                  child: child,
+                                ),
+                              );
+                            },
+                            child: !isRead
+                                ? const Icon(
+                                    Icons.check,
+                                    key: ValueKey('sent'),
+                                    size: 18,
+                                    color: Colors.white54,
+                                  )
+                                : const Icon(
+                                    Icons.check_circle,
+                                    key: ValueKey('read'),
+                                    size: 18,
+                                    color: Colors.pinkAccent,
+                                  ),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            time.format(context),
+                            style: const TextStyle(
+                              color: Colors.white54,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),

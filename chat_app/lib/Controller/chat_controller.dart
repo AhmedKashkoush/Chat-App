@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:chat_app/Constants/links.dart';
 import 'package:chat_app/Model/message.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,9 +11,10 @@ class ChatController extends GetxController {
   List<Message> messages = [];
   final TextEditingController controller = TextEditingController();
   final ScrollController listController = ScrollController();
+  final FocusNode focusNode = FocusNode();
   final String email = Get.arguments['email'];
   final String to = Get.arguments['to'];
-  final io.Socket _socket = io.io('http://192.168.1.7:4000', {
+  final io.Socket _socket = io.io(Links.base, {
     'autoConnect': false,
     'transports': ['websocket'],
   });
@@ -79,7 +81,9 @@ class ChatController extends GetxController {
     _socket.emit('connected', email);
     _socket.emit('message-read', to);
     _socket.on('message', (data) {
+      print(data);
       final Message message = Message.fromJson(data);
+      print(message.toJson());
       key.currentState?.insertItem(
         messages.length,
         duration: const Duration(milliseconds: 200),
@@ -178,6 +182,7 @@ class ChatController extends GetxController {
         from: email,
         to: to,
         text: controller.text.trim(),
+        reply: _reply,
         date: DateTime.now(),
       );
       messages.add(message);
@@ -207,6 +212,7 @@ class ChatController extends GetxController {
 
   void onSwipe(Message message) {
     _reply = message;
+    focusNode.requestFocus();
     update();
   }
 

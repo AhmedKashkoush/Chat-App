@@ -1,14 +1,20 @@
+import 'package:chat_app/Model/message.dart';
+import 'package:chat_app/View/Widgets/reply_widget.dart';
 import 'package:flutter/material.dart';
 
 class OtherBubble extends StatelessWidget {
   final String message;
   final TimeOfDay time;
   final bool hasTail;
+  final Message? reply;
+  final String email;
   const OtherBubble({
     super.key,
     required this.message,
     required this.time,
     this.hasTail = true,
+    this.reply,
+    required this.email,
   });
 
   @override
@@ -43,27 +49,54 @@ class OtherBubble extends StatelessWidget {
                       bottom: 2,
                     )
                   : const EdgeInsets.symmetric(
-                      horizontal: 8,
+                      horizontal: 18,
                       vertical: 2,
                     ),
-              padding: const EdgeInsets.all(12),
-              child: Padding(
-                padding: const EdgeInsetsDirectional.only(end: 8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      message,
-                    ),
-                    Text(
-                      time.format(context),
-                      style: const TextStyle(
-                        color: Colors.black54,
-                        fontSize: 12,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (reply != null)
+                    Padding(
+                      padding: hasTail
+                          ? const EdgeInsetsDirectional.only(end: 8)
+                          : const EdgeInsets.all(0),
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: ReplyWidget(
+                          reply: reply!,
+                          from: email,
+                        ),
                       ),
-                    )
-                  ],
-                ),
+                    ),
+                  Padding(
+                    padding: const EdgeInsetsDirectional.only(end: 8),
+                    child: Padding(
+                      padding: !hasTail
+                          ? const EdgeInsetsDirectional.only(
+                              top: 12,
+                              bottom: 12,
+                              start: 12,
+                              end: 4,
+                            )
+                          : const EdgeInsets.all(12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            message,
+                          ),
+                          Text(
+                            time.format(context),
+                            style: const TextStyle(
+                              color: Colors.black54,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
